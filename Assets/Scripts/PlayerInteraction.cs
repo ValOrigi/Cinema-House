@@ -7,8 +7,12 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private LayerMask LayerMask;
 
     [SerializeField] private TMP_Text InteractionText;
+    [SerializeField] private GameObject InteractUI;
+    [SerializeField] private GameObject InteractUIMobile;
+
 
     [SerializeField] private Camera mainCamera;
+    bool ButtonPressed = false;
 
     private void Update()
     {
@@ -20,7 +24,8 @@ public class PlayerInteraction : MonoBehaviour
         RaycastHit hit;
         if (!Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit, Range, LayerMask))
         {
-            InteractionText.text = "";
+            InteractUIMobile.SetActive(false);
+            InteractUI.SetActive(false);
             return;
         }
 
@@ -29,8 +34,26 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
 
-        InteractionText.text = interactable.InteractionText;
+        if (!InteractUI.activeSelf)
+        {
+            InteractUIMobile.SetActive(true);
+            InteractUI.SetActive(true);
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
             interactable.Interact();
+
+        if(ButtonPressed)
+        {
+            interactable.Interact();
+            ButtonPressed = false;
+        }
+        
     }
+
+    public void InteractButton()
+    {
+        ButtonPressed = true;
+    }
+
 }
